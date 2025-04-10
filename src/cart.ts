@@ -14,28 +14,45 @@ export const ProductSchema = z.object({
   quantity: z.number().int().positive({ message: "La quantité doit être supérieure à 0" }),
 });
 
-// Implémentation initiale (stubs) qui fait échouer tous les tests.
+let cart: Product[] = [];
 
 export function addProduct(product: Product): void {
-  throw new Error("Erreur");
+  ProductSchema.parse(product);
+
+  const productCopy = { ...product };
+
+  const index = cart.findIndex(p => p.id === product.id);
+  if (index !== -1) {
+    cart[index] = {
+      ...cart[index],
+      quantity: cart[index].quantity + product.quantity
+    };
+  } else {
+    cart.push(productCopy);
+  }
 }
 
 export function removeProduct(productId: string): void {
-  throw new Error("Erreur");
+  cart = cart.filter(p => p.id !== productId);
 }
 
 export function getProductCount(): number {
-  throw new Error("Erreur");
+  return cart.reduce((total, p) => total + p.quantity, 0);
 }
 
 export function getTotal(): number {
-  throw new Error("Erreur");
+  return cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
 }
 
+
 export function applyDiscount(code: string): void {
-  throw new Error("Erreur");
+  if (code === 'PROMO10') {
+    cart = cart.map(p => ({ ...p, price: p.price * 0.9 }));
+  } else {
+    throw new Error('Invalid discount code');
+  }
 }
 
 export function resetCart(): void {
-  throw new Error("Erreur");
+  cart = [];
 }
