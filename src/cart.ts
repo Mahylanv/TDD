@@ -56,3 +56,7 @@ export function applyDiscount(code: string): void {
 export function resetCart(): void {
   cart = [];
 }
+
+export function getCart(): Product[] {
+  return cart;
+}
